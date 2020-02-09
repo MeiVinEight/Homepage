@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Hi! M8</title>
+		<script type="text/javascript" src="js/fetch.js"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			window.onload = function()
+			{
+				let bg = new Vue
+				({
+					el: '#bg',
+					data:
+					{
+						blur: false
+					}
+				});
+				let outline = new Vue
+				({
+					el: '#outline',
+					data:
+					{
+						page1:
+						{
+							show: true,
+							opacity: true,
+							onshow()
+							{
+								outline.page1.show = true;
+								outline.time.top2 = false;
+								setTimeout(() =>
+								{
+									if (outline.time.top2) return;
+									outline.page1.opacity = true;
+								}, 50);
+							},
+							onhide()
+							{
+								outline.time.top2 = true;
+								outline.page1.opacity = false;
+								setTimeout(() =>
+								{
+									if (outline.time.top2) outline.page1.show = false;
+								}, 250);
+							}
+						},
+						page2:
+						{
+							show: false,
+							opacity: false,
+							onshow()
+							{
+								outline.page2.show = true;
+								outline.time.top2 = true;
+								setTimeout(() =>
+								{
+									if (outline.time.top2) outline.page2.opacity = true;
+								}, 50);
+							},
+							onhide()
+							{
+								outline.time.top2 = false;
+								outline.page2.opacity = false;
+								setTimeout(() =>
+								{
+									if (outline.time.top2) return;
+									outline.page2.show = false;
+								}, 250);
+							}
+						},
+						time:
+						{
+							value: '00:00:00',
+							top2: false,
+							cs:
+							{
+								'transform': 'scale(1)'
+							},
+							normal: true,
+							big:
+							{
+								ca:
+								[
+									{
+										'transform': 'scale(1.15)'
+									},
+									{
+										'transform': 'scale(1.1)'
+									}
+								]
+							},
+							small:
+							{
+								ca:
+								[
+									{
+										'transform': 'scale(0.95)'
+									},
+									{
+										'transform': 'scale(1)'
+									}
+								]
+							},
+							enter()
+							{
+								outline.time.normal = false;
+								outline.time.cs = outline.time.big.ca[0];
+								setTimeout(() =>
+								{
+									if (outline.time.normal) return;
+									outline.time.cs = outline.time.big.ca[1];
+								}, 250);
+							},
+							left()
+							{
+								outline.time.normal = true;
+								outline.time.cs = outline.time.small.ca[0];
+								setTimeout(() =>
+								{
+									if (outline.time.normal) outline.time.cs = outline.time.small.ca[1];
+								}, 250);
+							},
+							click()
+							{
+								outline.time.top2 = !outline.time.top2;
+								bg.blur = outline.time.top2;
+								if (outline.time.top2)
+								{
+									outline.page1.onhide();
+									outline.page2.onshow();
+								}
+								else
+								{
+									outline.page2.onhide();
+									outline.page1.onshow();
+								}
+							}
+						},
+						input:
+						{
+							slow: true,
+							text:
+							{
+								short: true,
+								searching: false,
+								value: '',
+								click()
+								{
+									outline.input.text.short = false;
+									outline.input.text.searching = true;
+									outline.input.slow = false;
+									bg.blur = true;
+									outline.input.type.none = true;
+									setTimeout(() => { outline.input.type.show = true; }, 250);
+								},
+								enter()
+								{
+									outline.input.text.short = false;
+								},
+								left()
+								{
+									if (outline.input.text.searching) return;
+									outline.input.text.short = true;
+								},
+								keydown(event)
+								{
+									if (event.keyCode == 13)
+									{
+										search();
+									}
+								}
+							},
+							img:
+							{
+								click()
+								{
+									search();
+								}
+							},
+							type:
+							{
+								show: false,
+								none: false,
+								select: 0,
+								selected(id)
+								{
+									outline.input.type.select = id;
+								},
+								baidu:
+								{
+									hover: false,
+									enter()
+									{
+										outline.input.type.baidu.hover = true;
+									},
+									left()
+									{
+										outline.input.type.baidu.hover = false;
+									}
+								},
+								bing:
+								{
+									hover: false,
+									enter()
+									{
+										outline.input.type.bing.hover = true;
+									},
+									left()
+									{
+										outline.input.type.bing.hover = false;
+									}
+								},
+								google:
+								{
+									hover: false,
+									enter()
+									{
+										outline.input.type.google.hover = true;
+									},
+									left()
+									{
+										outline.input.type.google.hover = false;
+									}
+								},
+								S360:
+								{
+									hover: false,
+									enter()
+									{
+										outline.input.type.S360.hover = true;
+									},
+									left()
+									{
+										outline.input.type.S360.hover = false;
+									}
+								},
+								sougou:
+								{
+									hover: false,
+									enter()
+									{
+										outline.input.type.sougou.hover = true;
+									},
+									left()
+									{
+										outline.input.type.sougou.hover = false;
+									}
+								},
+								translate:
+								{
+									hover: false,
+									enter()
+									{
+										outline.input.type.translate.hover = true;
+									},
+									left()
+									{
+										outline.input.type.translate.hover = false;
+									}
+								},
+								github:
+								{
+									hover: false,
+									enter()
+									{
+										outline.input.type.github.hover = true;
+									},
+									left()
+									{
+										outline.input.type.github.hover = false;
+									}
+								}
+							}
+						},
+						hitokoto:
+						{
+							text: ':D 获取中...',
+							creator: ':D 获取中...',
+							hover: false,
+							enter()
+							{
+								outline.hitokoto.hover = true;
+							},
+							left()
+							{
+								outline.hitokoto.hover = false;
+							}
+						}
+					},
+					methods:
+					{
+						reset()
+						{
+							bg.blur = false;
+							outline.page2.onhide();
+							outline.page1.onshow();
+							outline.input.text.short = true;
+							outline.input.text.searching = false;
+							outline.input.slow = true;
+							outline.input.type.show = false;
+							setTimeout(() => { outline.input.type.none = false; }, 250);
+						}
+					}
+				});
+				setInterval(() =>
+				{
+					const d = new Date();
+					outline.time.value = [d.getHours(), d.getMinutes(), d.getSeconds()].map(i => i.toString().padStart(2, '0')).join(':');
+				}, 200);
+				fetch('https://v1.hitokoto.cn').then(function (res)
+				{
+					return res.json();
+				}).then(data =>
+				{
+					outline.hitokoto.text = "「 "+data.hitokoto+" 」";
+					outline.hitokoto.creator = "——  "+data.creator;
+				}).catch(function (err)
+				{
+					console.error(err);
+				});
+				function search()
+				{
+					var text = outline.input.text.value;
+					if (text == '' || text == null) return;
+					switch (outline.input.type.select)
+					{
+						case 0:
+							window.open("https://www.baidu.com/s?word="+text);
+							break;
+						case 1:
+							window.open("https://cn.bing.com/search?q="+text);
+							break;
+						case 2:
+							window.open("https://www.google.com/search?q="+text);
+							break;
+						case 3:
+							window.open("https://www.so.com/s?ie=UTF-8&q="+text);
+							break;
+						case 4:
+							window.open("https://www.sogou.com/web?ie=UTF-8&query="+text);
+							break;
+						case 5:
+							window.open("https://translate.google.cn/?source=osdd#auto|auto|"+text);
+							break;
+						case 6:
+							window.open("https://github.com/search?ref=opensearch&q="+text);
+							break;
+					}
+				}
+			};
+		</script>
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<div id="bg" :class="blur ? 'blur' : ''"></div>
+		<div id="outline" style="margin: 0;padding: 0;top: 0;left: 0;position: absolute;height: 100%;width: 100%;" @click.self="reset" align="center">
+			<div v-cloak id="time" class="unselectable" :style="time.cs" @mouseenter.stop.self="time.enter" @mouseleave.stop.self="time.left" @mousedown.stop.self="time.click" >{{time.value}}</div>
+			<div v-show="page1.show" :style="{ 'opacity': page1.opacity ? 1 : 0, 'transition': 'all 0.25s' }">
+				<div id="input" :class="input.slow ? 'input-slow' : 'input-high'">
+					<input type="text" id="text" :class="input.text.short ? 'text-short' : 'text-long'" v-model="input.text.value" @click.stop="" @mousedown.stop="input.text.click" @keydown="input.text.keydown" @mouseenter.stop="input.text.enter" @mouseleave.stop="input.text.left"/>
+					<img src="img/search.png" id="search" @click.stop="input.img.click" @mouseenter.stop="input.text.enter" @mouseleave.stop="input.text.left">
+					<div id="type" v-show="input.type.none" :class=" input.type.show ? 'type-show' : 'type-hide' " @click.stop.self="reset">
+						<span :class="[ 'type-ico', input.type.select==5 ? 'type-select' : input.type.translate.hover ? 'type-deep' : 'type-slow' ]" @mouseenter.stop="input.type.translate.enter" @mouseleave.stop="input.type.translate.left" @click.stop="input.type.selected(5)">
+							<img src="img/translate.png" class="ico">
+						</span>
+						<span :class="[ 'type-ico', input.type.select==3 ? 'type-select' : input.type.S360.hover ? 'type-deep' : 'type-slow' ]" @mouseenter.stop="input.type.S360.enter" @mouseleave.stop="input.type.S360.left" @click.stop="input.type.selected(3)">
+							<img src="img/360.png" class="ico">
+						</span>
+						<span :class="[ 'type-ico', input.type.select==1 ? 'type-select' : input.type.bing.hover ? 'type-deep' : 'type-slow' ]" @mouseenter.stop="input.type.bing.enter" @mouseleave.stop="input.type.bing.left" @click.stop="input.type.selected(1)">
+							<img src="img/bing.png" class="ico">
+						</span>
+						<span :class="[ 'type-ico', input.type.select==0 ? 'type-select' : input.type.baidu.hover ? 'type-deep' : 'type-slow' ]" @mouseenter.stop="input.type.baidu.enter" @mouseleave.stop="input.type.baidu.left" @click.stop="input.type.selected(0)">
+							<img src="img/baidu.png" class="ico">
+						</span>
+						<span :class="[ 'type-ico', input.type.select==2 ? 'type-select' : input.type.google.hover ? 'type-deep' : 'type-slow' ]" @mouseenter.stop="input.type.google.enter" @mouseleave.stop="input.type.google.left" @click.stop="input.type.selected(2)">
+							<img src="img/google.png" class="ico">
+						</span>
+						<span :class="[ 'type-ico', input.type.select==4 ? 'type-select' : input.type.sougou.hover ? 'type-deep' : 'type-slow' ]" @mouseenter.stop="input.type.sougou.enter" @mouseleave.stop="input.type.sougou.left" @click.stop="input.type.selected(4)">
+							<img src="img/sogou.png" class="ico">
+						</span>
+						<span :class="[ 'type-ico', input.type.select==6 ? 'type-select' : input.type.github.hover ? 'type-deep' : 'type-slow' ]" @mouseenter.stop="input.type.github.enter" @mouseleave.stop="input.type.github.left" @click.stop="input.type.selected(6)">
+							<img src="img/github.png" class="ico">
+						</span>
+					</div>
+				</div>
+				<div id="hitokoto" :class="hitokoto.hover ? 'hitokoto-hover' : 'hitokoto'" @mouseenter.stop="hitokoto.enter" @mouseleave.stop="hitokoto.left">
+					<br>
+					<div v-cloak class="unselectable" >{{hitokoto.text}}</div>
+					<div id="hitokoto-creator" v-cloak :class="[ { 'hitokoto-creator': !hitokoto.hover }, 'unselectable' ]">{{hitokoto.creator}}</div>
+					<br>
+				</div>
+			</div>
+			<div v-show="page2.show" :style="{ 'opacity': page2.opacity ? 1 : 0, 'transition': 'all 0.25s' }" @click.stop.self="reset">
+				<div :style="{ 'width': '720px', 'height': '400px', 'margin-top': page1.show ? 0 : '60px' }" @click.stop.self="reset">
+					<a href="https://www.mcbbs.net/" target="_blank" class="mark">MCBBS</a>
+					<a href="http://docs.zoyn.top/bukkitapi/1.12.2/" target="_blank" class="mark">BukkitAPI</a>
+					<a href="https://lug.ustc.edu.cn/wiki/doc/smart-questions" target="_blank" class="mark">提问的智慧</a>
+					<a href="https://github.com/" target="_blank" class="mark">Github</a>
+					<a href="http://www.bilibili.com/" target="_blank" class="mark">Bilibili</a>
+					<a href="https://harbinger.covertdragon.team/" target="_blank" class="mark">Forge开发指南</a>
+					<a href="https://mcforge-cn.readthedocs.io/zh/latest/" target="_blank" class="mark">Forge文档</a>
+					<a href="https://translate.google.cn/" target="_blank" class="mark">Google翻译</a>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
